@@ -67,4 +67,8 @@ Development notes
 - Client templates: templates/clients.html and templates/client_view.html
 - To reset the database, run the commands in the Database section above
 
+Contributors
+
+- [msfurusa](https://github.com/msfurusa)
+
 License
