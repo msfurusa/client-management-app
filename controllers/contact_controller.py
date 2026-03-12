@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, jsonify, request, redirect
 from database import get_db
 from services.contact_service import (
-    validate_email, get_all_contacts, get_contact_by_id, 
+    validate_email, get_all_contacts, get_contact_by_id,
     get_linked_clients, create_contact, update_contact,
     link_contact_to_client, unlink_contact_from_client,
     contact_email_exists
@@ -144,12 +144,12 @@ def unlink_client_from_contact(contact_id, client_id):
     finally:
         db.close()
 
-@contact_routes.route("/unlink/<int:client>/<int:contact>", methods=["DELETE"])
-def unlink(client, contact):
+@contact_routes.route("/contacts/<int:contact_id>/unlink/<int:client_id>", methods=["DELETE"])
+def ajax_unlink_client(contact_id, client_id):
     db = get_db()
     
     try:
-        unlink_contact_from_client(db, contact, client)
+        unlink_contact_from_client(db, contact_id, client_id)
         return jsonify({"status": "ok"})
     finally:
         db.close()

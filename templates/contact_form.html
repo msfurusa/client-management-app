@@ -150,16 +150,15 @@
                 <tr>
                     <th style="text-align: left;">Client name</th>
                     <th style="text-align: left;">Client code</th>
-                    <th style="text-align: left;">Action</th>
+                    <!-- No heading for action per spec -->
+                    <th style="width: 120px;"></th>
                 </tr>
                 {% for client in linked_clients %}
-                <tr>
+                <tr data-client-id="{{client.id}}">
                     <td style="text-align: left;">{{client.name}}</td>
                     <td style="text-align: left;">{{client.client_code}}</td>
                     <td style="text-align: left;">
-                        <form method="POST" action="/contacts/{{contact.id}}/unlink/{{client.id}}" style="display: inline;">
-                            <button type="submit" onclick="return confirm('Are you sure you want to unlink this client?');">Unlink</button>
-                        </form>
+                        <a href="#" class="unlink-link" data-client-id="{{client.id}}">Unlink</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -205,6 +204,49 @@ function openTab(evt, tabName) {
         evt.currentTarget.classList.add("active");
     }
 }
+
+// AJAX unlink handler
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.unlink-link').forEach(function(el) {
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            var clientId = this.getAttribute('data-client-id');
+            var contactId = {{ contact.id }};
+
+            if (!confirm('Are you sure you want to unlink this client?')) {
+                return;
+            }
+
+            fetch(`/contacts/${contactId}/unlink/${clientId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }).then(function(resp) {
+                if (!resp.ok) throw new Error('Network response was not ok');
+                return resp.json();
+            }).then(function(data) {
+                if (data.status === 'ok') {
+                    // remove the row
+                    var row = el.closest('tr');
+                    row.parentNode.removeChild(row);
+
+                    // if no more rows, show the no contacts message
+                    var table = document.querySelector('#clients table');
+                    if (!table || table.querySelectorAll('tr[data-client-id]').length === 0) {
+                        document.querySelector('#clients').innerHTML = '<p>No contact(s) found.</p>';
+                    }
+                } else {
+                    alert('Failed to unlink client');
+                }
+            }).catch(function(err) {
+                console.error(err);
+                alert('Error unlinking client');
+            });
+        });
+    });
+});
 </script>
 
 </body>
