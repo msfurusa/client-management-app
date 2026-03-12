@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Client</title>
+    <link rel="stylesheet" href="/static/style/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Clients</h2>
+
+    <form action="/create" method="POST">
+
+        <input name="name" placeholder="Client name" required>
+
+        <button>Create</button>
+
+    </form>
+
+    {% if clients|length == 0 %}
+
+    <p>No client(s) found.</p>
+
+    {% else %}
+
+    <table>
+
+        <tr>
+            <th>Name</th>
+            <th>Client Code</th>
+            <th>No of linked contacts</th>
+        </tr>
+
+        {% for c in clients %}
+
+        <tr>
+
+            <td>
+                <a href="/client/{{c.id}}">
+                    {{c.name}}
+                </a>
+            </td>
+
+            <td>{{c.client_code}}</td>
+
+            <td class="center">{{c.contacts}}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

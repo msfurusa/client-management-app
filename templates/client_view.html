@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Client</title>
+
+    <link rel="stylesheet" href="/static/style/style.css">
+
+    <script src="/static/appjs/app.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>{{client.name}}</h2>
+
+    <div class="tabs">
+        <button onclick="openTab('general')">General</button>
+        <button onclick="openTab('contacts')">Contacts</button>
+    </div>
+
+    <div id="general" class="tab-content">
+        <p><strong>Client Code:</strong> {{client.client_code}}</p>
+    </div>
+
+    <div id="contacts" class="tab-content" style="display:none;">
+        <h3>Contacts</h3>
+
+        <div style="margin-bottom: 20px;">
+            <a href="/client/{{client.id}}/link-contact"><button>Link Contact</button></a>
+        </div>
+
+        {% if contacts|length == 0 %}
+
+        <p>No contacts found</p>
+
+        {% else %}
+
+        <table>
+
+            <tr>
+                <th>Contact Full Name</th>
+                <th>Contact email address</th>
+            </tr>
+
+            {% for c in contacts %}
+
+            <tr>
+
+                <td>{{c.fullname}}</td>
+
+                <td>{{c.email}}</td>
+
+                <td>
+
+                    <button onclick="unlinkContact({{client.id}},{{c.id}})">
+                        Unlink
+                    </button>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+
+</html>

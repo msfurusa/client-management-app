@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contacts</title>
+    <link rel="stylesheet" href="/static/style/style.css">
+    <script src="/static/appjs/app.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Contacts</h2>
+
+    <form action="/contacts/create" method="GET">
+        <button type="submit">Create</button>
+    </form>
+
+    {% if contacts|length == 0 %}
+
+    <p>No contact(s) found.</p>
+
+    {% else %}
+
+    <table>
+
+        <tr>
+            <th style="text-align: left;">Name</th>
+            <th style="text-align: left;">Surname</th>
+            <th style="text-align: left;">Email address</th>
+            <th style="text-align: center;">No. of linked clients</th>
+            <th style="text-align: left;">Action</th>
+        </tr>
+
+        {% for contact in contacts %}
+
+        <tr>
+
+            <td style="text-align: left;">{{contact.name}}</td>
+
+            <td style="text-align: left;">{{contact.surname}}</td>
+
+            <td style="text-align: left;">{{contact.email}}</td>
+
+            <td style="text-align: center;">{{contact.client_count}}</td>
+
+            <td style="text-align: left;">
+                <a href="/contacts/{{contact.id}}"><button type="button">View</button></a>
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

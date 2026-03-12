@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Link Contact</title>
+    <link rel="stylesheet" href="/static/style/style.css">
+    <script src="/static/appjs/app.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Link Contact to {{client.name}}</h2>
+
+    <div class="tabs">
+        <button onclick="openTab('general')">General</button>
+    </div>
+
+    <form action="/client/{{client.id}}/link-contact" method="POST">
+
+        <div id="general" class="tab-content">
+
+            <div style="margin-bottom: 15px;">
+                <label for="name">Name:</label><br>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="surname">Surname:</label><br>
+                <input type="text" id="surname" name="surname" required>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="client_code">Client Code:</label><br>
+                <input type="text" id="client_code" name="client_code" value="{{client.client_code}}" readonly required>
+            </div>
+
+            <button type="submit">Link Contact</button>
+            <a href="/client/{{client.id}}" style="margin-left: 10px;"><button type="button">Cancel</button></a>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

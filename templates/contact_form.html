@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if contact %}Edit{% else %}Create{% endif %} Contact</title>
+    <link rel="stylesheet" href="/static/style/style.css">
+    <script src="/static/appjs/app.js"></script>
+    <style>
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tabs button {
+            background-color: #f1f1f1;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 12px 16px;
+            transition: 0.3s;
+            font-size: 14px;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tabs button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .tabs button.active {
+            background-color: #f1f1f1;
+            border-bottom: 3px solid #2c7be5;
+            color: #2c7be5;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeEffect 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeEffect {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .button-group {
+            margin-top: 20px;
+        }
+
+        .button-group button {
+            margin-right: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th {
+            background-color: #f5f5f5;
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>{% if contact %}Edit Contact: {{contact.surname}} {{contact.name}}{% else %}Create New Contact{% endif %}</h2>
+
+    <div class="tabs">
+        <button onclick="openTab(event, 'general')" class="tab-link active">General</button>
+        {% if contact %}
+        <button onclick="openTab(event, 'clients')" class="tab-link">Clients</button>
+        {% endif %}
+    </div>
+
+    <!-- General Tab -->
+    <div id="general" class="tab-content active">
+        <form method="POST" action="{% if contact %}/contacts/{{contact.id}}{% else %}/contacts/create{% endif %}">
+            
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="{% if contact %}{{contact.name}}{% endif %}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="surname">Surname:</label>
+                <input type="text" id="surname" name="surname" value="{% if contact %}{{contact.surname}}{% endif %}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{% if contact %}{{contact.email}}{% endif %}" required>
+            </div>
+
+            <div class="button-group">
+                <button type="submit">{% if contact %}Update{% else %}Create{% endif %}</button>
+                <a href="/contacts"><button type="button">Cancel</button></a>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Clients Tab -->
+    {% if contact %}
+    <div id="clients" class="tab-content">
+        <h3>Linked Clients</h3>
+
+        {% if linked_clients|length == 0 %}
+            <p>No contact(s) found.</p>
+        {% else %}
+            <table>
+                <tr>
+                    <th style="text-align: left;">Client name</th>
+                    <th style="text-align: left;">Client code</th>
+                    <th style="text-align: left;">Action</th>
+                </tr>
+                {% for client in linked_clients %}
+                <tr>
+                    <td style="text-align: left;">{{client.name}}</td>
+                    <td style="text-align: left;">{{client.client_code}}</td>
+                    <td style="text-align: left;">
+                        <form method="POST" action="/contacts/{{contact.id}}/unlink/{{client.id}}" style="display: inline;">
+                            <button type="submit" onclick="return confirm('Are you sure you want to unlink this client?');">Unlink</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        <div style="margin-top: 20px;">
+            <h3>Link Client</h3>
+            <form method="POST" action="/contacts/{{contact.id}}/link-client">
+                <div class="form-group">
+                    <label for="client_id">Select Client:</label>
+                    <select id="client_id" name="client_id" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="">-- Select a client --</option>
+                        {% for client in all_clients %}
+                        <option value="{{client.id}}">{{client.name}} ({{client.client_code}})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit">Link Client</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].classList.remove("active");
+    }
+
+    tablinks = document.getElementsByClassName("tab-link");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+    }
+
+    document.getElementById(tabName).classList.add("active");
+    if (evt) {
+        evt.currentTarget.classList.add("active");
+    }
+}
+</script>
+
+</body>
+</html>
