@@ -2,69 +2,61 @@
 
 Client & Contact Management System
 
-Overview
+## Overview
+This is a Flask-based application to manage Clients and Contacts with a many-to-many relationship. It supports creating and listing clients and contacts, linking/unlinking contacts to clients, and basic validation (unique email and email format).
 
-A small Flask-based application to manage Clients and Contacts with a many-to-many relationship. Supports creating and listing clients and contacts, linking/unlinking contacts to clients, and server-side validation (unique email and email format).
+## Features
+- Clients
+  - Create client with auto-generated client code
+  - List clients and count linked contacts
+  - Link/unlink contacts
+- Contacts
+  - Create contact
+  - Server-side email validation and uniqueness enforcement
+  - List contacts and count linked clients
+  - Link/unlink clients to contacts
+- Database
+  - SQLite with normalized schema and many-to-many relationship via `client_contacts`
+  - Indexes for performance
+- UI
+  - HTML templates with tabs and AJAX unlink support
 
-Features
-
-- Clients: create (auto-generated code), list, link/unlink contacts
-- Contacts: create/edit, email validation & uniqueness, list, link/unlink clients
-- Database: SQLite with normalized schema and many-to-many relationship via `client_contacts`
-- UI: Simple HTML templates with tabs and AJAX unlink support
-
-Prerequisites
-
+## Prerequisites
 - Python 3.10+ (tested with 3.14)
 - Git
 
-Setup
-
+## Setup
 1. Clone the repository
-   git clone "client-management-app"
-2. Enter the project directory
-   cd client-management-app
-3. Create and activate a virtual environment
+   git clone https://github.com/msfurusa/client-management-app.git
+2. Create and activate virtual environment
    python3 -m venv .venv
    source .venv/bin/activate
-4. Install dependencies
+3. Install dependencies
    pip install -r requirements.txt
 
-Note: `requirements.txt` is present in the repository. To regenerate it from your virtual environment:
+Note: If `requirements.txt` is not present, install Flask manually:
+   pip install flask
 
-   source .venv/bin/activate
-   python -m pip freeze > requirements.txt
-
-Database
-
-- The app uses SQLite (database.db). To recreate/reset the database:
-
-   rm -f database.db
-   sqlite3 database.db < schema.sql
-
-Running the app
-
+## Running the app
 1. Activate the virtual environment
    source .venv/bin/activate
 2. Start the Flask server
    python3 app.py
 3. Open http://127.0.0.1:5000/ in your browser
 
-Project structure
+## Project Structure
+- app.py - Flask app entrypoint
+- controllers/ - Flask blueprints for Clients and Contacts
+- services/ - Business logic helpers (client_service, contact_service)
+- templates/ - Jinja2 templates for UI
+- static/ - Styles and JavaScript
+- database.py - SQLite helper to get DB connection
+- schema.sql - DB schema
 
-- app.py - Flask application entrypoint
-- controllers/ - Flask blueprints (clients, contacts)
-- services/ - Business logic (client_service, contact_service)
-- templates/ - Jinja2 HTML templates
-- static/ - CSS and JavaScript assets
-- database.py - DB helper
-- schema.sql - Database schema
-- requirements.txt - Python dependencies
+## Development notes
+- Contacts: templates/contacts.html and templates/contact_form.html
+- Clients: templates/clients.html and templates/client_view.html
+- To reset DB: drop database.db and re-run schema.sql
 
-Development notes
+## License
 
-- Contact templates: templates/contacts.html and templates/contact_form.html
-- Client templates: templates/clients.html and templates/client_view.html
-- To reset the database, run the commands in the Database section above
-
-License
